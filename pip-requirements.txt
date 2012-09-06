@@ -1,3 +1,10 @@
 Django==1.4.1
+Pygments==1.5
 -e git+git@github.com:toastdriven/django-haystack.git@7a7bef247cb7c8bc0180d18ec1d5f158971d913c#egg=django_haystack-dev
+fancycompleter==0.4
+ipython==0.13
+pdbpp==0.7.2
+pyrepl==0.8.4
+readline==6.2.2
+wmctrl==0.1
 wsgiref==0.1.2
