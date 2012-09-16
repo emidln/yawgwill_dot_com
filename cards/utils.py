@@ -14,16 +14,23 @@ def calculate_colors(mana_cost):
 
 
 def parse_manacost(manacost):
+    """ this won't handle (2/W)(2/W)(2/W) """
     if manacost is None:
         return {'cost': 0, 'colors': set()}
     cost = 0
     colors = set()
     inside = False
+    current_int = None
     for c in list(manacost):
         try:
             i = int(c)
-            cost += i
+            if current_int is None:
+                current_int = c
+            else:
+                current_int += c
         except ValueError:
+            if c == 'X':
+                continue
             if c == '(':
                 inside = True
                 continue
@@ -36,10 +43,27 @@ def parse_manacost(manacost):
                     continue
             else:
                 cost += 1
+            if current_int is not None:
+                cost += int(current_int)
+                current_int = None
             colors.add(c)
+    if current_int is not None:
+        cost += int(current_int)
     return {'cost': cost, 'colors': colors}
 
-
+def test_parse_manacost():
+    mana_costs = {
+            '1': 1,
+            '0': 0,
+            '15': 15,
+            '8GG': 10,
+            'X1RR': 3,
+            '2(G/B)': 3,
+            #'(2/W)(2/W)(2/w)': 6,
+    }
+    for mc, cmc in mana_costs.iteritems():
+        assert(parse_manacost(mc)['cost'] == cmc)
+        print "okay"
 def import_sets(sets):
     created = 0
     for code, name in sets.iteritems():
@@ -118,6 +142,7 @@ def import_cards(cards_filename):
         if pt:
             power, toughness = pt.split('/')
         c = Card()
+        c.text = card['text']
         c.name = card['name']
         c.type = create_CardType(*parse_type_line(card['type']))
         c.power = power

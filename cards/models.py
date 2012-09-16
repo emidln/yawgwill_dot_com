@@ -43,7 +43,7 @@ class CardType(models.Model):
         args = [name]
         if supers:
             s += ' %s'
-            args.insert(' '.join(sorted(supers)), 0)
+            args.insert(0, ' '.join(sorted(supers)))
         if subs:
             s += ' - %s'
             args.append(' '.join(sorted(subs)))
@@ -81,6 +81,7 @@ class Card(models.Model):
     power = models.CharField(max_length=5, blank=True, null=True)
     toughness = models.CharField(max_length=5, blank=True, null=True)
     cmc = models.IntegerField(default=0)
+    loyalty = models.IntegerField(blank=True,null=True)
     #keywords = models.ManyToManyField(Keyword, related_name='cards')
     sets = models.ManyToManyField(Set, through=CardSetImageURL)
     colors = models.ManyToManyField(Color, related_name='cards', blank=True, null=True)
