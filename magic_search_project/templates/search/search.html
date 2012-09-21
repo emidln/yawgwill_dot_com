@@ -18,7 +18,7 @@
         <dl>
                 <dt>Loyalty</dt>
                 {% for loyalty in facets.fields.loyalty %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=loyalty_exact:{{ loyalty.0|urlencode }}">{{ loyalty.0 }}</a> ({{ loyalty.1 }})</dd>
+                <dd><a href="?{{ getvars }}&selected_facets=loyalty_exact:{{ loyalty.0|urlencode }}">{{ loyalty.0 }}</a> ({{ loyalty.1 }})</dd>
                 {% endfor %}
         </dl>
     </div>
@@ -29,7 +29,7 @@
         <dl>
                 <dt>Mana Cost</dt>
                 {% for mana_cost in facets.fields.mana_cost %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=mana_cost_exact:{{ mana_cost.0|urlencode }}">{{ mana_cost.0 }}</a> ({{ mana_cost.1 }})</dd>
+                <dd><a href="?{{ getvars }}&selected_facets=mana_cost_exact:{{ mana_cost.0|urlencode }}">{{ mana_cost.0 }}</a> ({{ mana_cost.1 }})</dd>
                 {% endfor %}
         </dl>
     </div>
@@ -40,7 +40,7 @@
         <dl>
                 <dt>Power</dt>
                 {% for power in facets.fields.power %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=power_exact:{{ power.0|urlencode }}">{{ power.0 }}</a> ({{ power.1 }})</dd>
+                <dd><a href="?{{ getvars }}&selected_facets=power_exact:{{ power.0|urlencode }}">{{ power.0 }}</a> ({{ power.1 }})</dd>
                 {% endfor %}
         </dl>
     </div>
@@ -51,7 +51,7 @@
         <dl>
                 <dt>Toughness</dt>
                 {% for toughness in facets.fields.toughness %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=toughness_exact:{{ toughness.0|urlencode }}">{{ toughness.0 }}</a> ({{ toughness.1 }})</dd>
+                <dd><a href="?{{ getvars }}&selected_facets=toughness_exact:{{ toughness.0|urlencode }}">{{ toughness.0 }}</a> ({{ toughness.1 }})</dd>
                 {% endfor %}
         </dl>
     </div>
@@ -62,7 +62,7 @@
         <dl>
                 <dt>Converted Mana Cost</dt>
                 {% for cmc in facets.fields.cmc %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=cmc_exact:{{ cmc.0|urlencode }}">{{ cmc.0 }}</a> ({{ cmc.1 }})</dd>
+                <dd><a href="?{{ getvars }}&selected_facets=cmc_exact:{{ cmc.0|urlencode }}">{{ cmc.0 }}</a> ({{ cmc.1 }})</dd>
                 {% endfor %}
         </dl>
     </div>
@@ -73,7 +73,7 @@
         <dl>
                 <dt>Set</dt>
                 {% for sets in facets.fields.sets %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=sets_exact:{{ sets.0|urlencode }}">{{ sets.0 }}</a> ({{ sets.1 }})</dd>
+                <dd><a href="?{{ getvars }}&selected_facets=sets_exact:{{ sets.0|urlencode }}">{{ sets.0 }}</a> ({{ sets.1 }})</dd>
                 {% endfor %}
         </dl>
     </div>
@@ -84,7 +84,7 @@
         <dl>
                 <dt>Color</dt>
                 {% for colors in facets.fields.colors %}
-                    <dd><a href="{{ request.get_full_path }}&amp;selected_facets=colors_exact:{{ colors.0|urlencode }}">{{ colors.0 }}</a> ({{ colors.1 }})</dd>
+                <dd><a href="?{{ getvars }}&selected_facets=colors_exact:{{ colors.0|urlencode }}">{{ colors.0 }}</a> ({{ colors.1 }})</dd>
                 {% endfor %}
         </dl>
     </div>
@@ -95,7 +95,7 @@
         <dl>
             <dt>Type Line</dt>
             {% for card_type in facets.fields.card_type %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=card_type_exact:{{ card_type.0|urlencode }}">{{ card_type.0 }}</a> ({{ card_type.1 }})</dd>
+            <dd><a href="?{{ getvars }}&selected_facets=card_type_exact:{{ card_type.0|urlencode }}">{{ card_type.0 }}</a> ({{ card_type.1 }})</dd>
             {% endfor %}
         </dl>
     </div>
@@ -106,7 +106,7 @@
         <dl>
             <dt>Type</dt>
             {% for type in facets.fields.type %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=type_exact:{{ type.0|urlencode }}">{{ type.0 }}</a> ({{ type.1 }})</dd>
+            <dd><a href="?{{ getvars }}&selected_facets=type_exact:{{ type.0|urlencode }}">{{ type.0 }}</a> ({{ type.1 }})</dd>
             {% endfor %}
         </dl>
     </div>
@@ -117,7 +117,7 @@
         <dl>
             <dt>Super Type</dt>
             {% for super_types in facets.fields.super_types %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=super_types_exact:{{ super_types.0|urlencode }}">{{ super_types.0 }}</a> ({{ super_types.1 }})</dd>
+            <dd><a href="?{{ getvars }}&selected_facets=super_types_exact:{{ super_types.0|urlencode }}">{{ super_types.0 }}</a> ({{ super_types.1 }})</dd>
             {% endfor %}
         </dl>
     </div>
@@ -128,7 +128,7 @@
         <dl>
             <dt>Sub Type</dt>
             {% for sub_types in facets.fields.sub_types %}
-                <dd><a href="{{ request.get_full_path }}&amp;selected_facets=sub_types_exact:{{ sub_types.0|urlencode }}">{{ sub_types.0 }}</a> ({{ sub_types.1 }})</dd>
+            <dd><a href="?{{ getvars }}&selected_facets=sub_types_exact:{{ sub_types.0|urlencode }}">{{ sub_types.0 }}</a> ({{ sub_types.1 }})</dd>
             {% endfor %}
         </dl>
     </div>
@@ -140,7 +140,7 @@
     {% if paginator.count %}
     <p>{{ paginator.count }} matching cards found.</p>
     {% spaceless %}
-    <p>{% if page.has_previous %} <a href="?page={{ page.previous_page_number }}{{ getvars }}">Previous</a> {% endif %} Page {{ page.number }} of {{ paginator.num_pages }} {% if page.has_next %} <a href="?page={{ page.next_page_number }}{{ getvars }}">Next</a> {% endif %}</p>{% endspaceless %}
+    <p>{% if page.has_previous %} <a href="?{{ getvars }}&page={{ page.previous_page_number }}">Previous</a> {% endif %} Page {{ page.number }} of {{ paginator.num_pages }} {% if page.has_next %} <a href="?{{ getvars }}&page={{ page.next_page_number }}">Next</a> {% endif %}</p>{% endspaceless %}
         {% for result in page.object_list %}
             <div class="search_result" style="border: 1px solid black; padding: 0.5em; margin-top: 0.5em;">
                 <h4>{{ forloop.counter0|add:page.start_index }}. {{ result.name }} {{ result.mana_cost }}</h4>
@@ -149,7 +149,7 @@
             </div>
             {% endfor %}
     {% spaceless %}
-    <p>{% if page.has_previous %} <a href="?page={{ page.previous_page_number }}{{ getvars }}">Previous</a> {% endif %} Page {{ page.number }} of {{ paginator.num_pages }} {% if page.has_next %} <a href="?page={{ page.next_page_number }}{{ getvars }}">Next</a> {% endif %}</p>{% endspaceless %}
+    <p>{% if page.has_previous %} <a href="?{{ getvars }}&page={{ page.previous_page_number }}">Previous</a> {% endif %} Page {{ page.number }} of {{ paginator.num_pages }} {% if page.has_next %} <a href="?{{ getvars }}&page={{ page.next_page_number }}">Next</a> {% endif %}</p>{% endspaceless %}
     {% else %}
       <p>Sorry, no matching cards found.</p>
     {% endif %}

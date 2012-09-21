@@ -6,5 +6,5 @@ def getvars(request):
     if 'page' in getvars:
         del getvars['page']
     if len(getvars.keys()) > 0:
-        d['getvars'] = "&%s" % getvars.urlencode()
+        d['getvars'] = getvars.urlencode()
     return d
