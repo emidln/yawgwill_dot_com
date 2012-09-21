@@ -1,55 +1,152 @@
 import json
+import string
 
 from django.db.models import Q
 
 from models import Set, Type, SuperType, SubType, CardType, Card, Color, CardSetImageURL
 
-
-def calculate_cmc(mana_cost):
-    return parse_manacost(mana_cost)['cost']
-
-
-def calculate_colors(mana_cost):
-    return parse_manacost(mana_cost)['colors']
+number_set = set(map(str, range(10)))
+color_set = set('UBGRWP')
 
 
-def parse_manacost(manacost):
-    """ this won't handle (2/W)(2/W)(2/W) """
-    if manacost is None:
-        return {'cost': 0, 'colors': set()}
-    cost = 0
+def check_builder(l, n):
+    return {x: n for x in l}
+
+
+CHECKER = check_builder(string.uppercase, 2)
+CHECKER.update(check_builder(string.lowercase, 1))
+
+
+def check(c):
+    """ return 2 for uppercase, 1 for lowercase, 0 otherwise """
+    return CHECKER.get(c, 0)
+
+
+def reducer(x, y):
+    """ Helper for recover spaces. If x is lowercase and y is uppercase, insert
+        a space because we have a runon word to correct.
+    """
+    if check(x[-1]) == 1 and (check(y) == 2 or y == '{'):
+        return x + ' ' + y
+    return x + y
+
+
+def recover_spaces(sentence):
+    """ Given a sentence where lines were joined by removing the newline, return
+        add spaces where they might logically go.
+    """
+    return ' '.join(map(lambda word: reduce(reducer, word), sentence.split()))
+
+
+def color(c):
+    """ return color or C denoting colorless """
+    if c in color_set:
+        return c
+    return 'C'
+
+
+def cost(c):
+    """ return the cmc of a character """
+    try:
+        return int(c)
+    except ValueError:
+        if c == 'X':
+            return 0
+        return 1
+
+
+def handle_parens(partial_cost):
+    """ handle what is inside a set of parenthesis """
+    costs = []
     colors = set()
-    inside = False
-    current_int = None
-    for c in list(manacost):
-        try:
-            i = int(c)
-            if current_int is None:
-                current_int = c
+
+    number_tmp = None
+    for i, c in enumerate(partial_cost):
+        if c == '/':
+            if number_tmp is not None:
+                costs.append(cost(''.join(number_tmp)))
+                colors.add('C')
+                number_tmp = None
+            continue
+        if c == ')':
+            if number_tmp is not None:
+                costs.append(cost(''.join(number_tmp)))
+                colors.add('C')
+                number_tmp = None
+            break
+        if c in number_set:
+            if number_tmp is not None:
+                number_tmp.append(c)
             else:
-                current_int += c
-        except ValueError:
-            if c == 'X':
-                continue
-            if c == '(':
-                inside = True
-                continue
-            if inside:
-                if c == ')':
-                    cost += 1
-                    inside = False
-                    continue
-                if c == '/':
-                    continue
+                number_tmp = [c]
+        else:
+            # handle (10G/U) as a cost
+            if number_tmp is not None:
+                costs.append(cost(''.join(number_tmp)))
+                colors.add('C')
+                number_tmp = None
+            costs.append(cost(c))
+            colors.add(color(c))
+
+    return partial_cost[i+1:], max(costs), colors
+
+
+def parse_manacost(mana_cost):
+    """ parse the mana cost with help from handle_parens """
+    current_index = 0
+    current_source = mana_cost[:]
+    current_length = len(current_source)
+
+    total_cost = 0
+    colors = set()
+
+    # number_tmp lives as None when not in use
+    number_tmp = None
+    while current_index < current_length:
+        char = current_source[current_index]
+        if char == '(':
+            # compact number tmp since we're done with numbers
+            if number_tmp is not None:
+                total_cost += cost(''.join(number_tmp))
+                colors.add('C')
+                number_tmp = None
+            results = handle_parens(current_source[current_index+1:])
+            current_source = results[0]
+            current_index = -1
+            current_length = len(current_source)
+            total_cost += results[1]
+            colors = colors | results[2]
+            if not current_source:
+                break
+        else:
+            # if we have a number, utilize number_tmp
+            if char in number_set:
+                if number_tmp is not None:
+                    number_tmp.append(char)
+                else:
+                    number_tmp = [char]
             else:
-                cost += 1
-            if current_int is not None:
-                cost += int(current_int)
-                current_int = None
-            colors.add(c)
-    if current_int is not None:
-        cost += int(current_int)
-    return {'cost': cost, 'colors': colors}
+                # compact number_tmp since we're done with numbers
+                if number_tmp is not None:
+                    total_cost += cost(''.join(number_tmp))
+                    colors.add('C')
+                    number_tmp = None
+                total_cost += cost(char)
+                colors.add(color(char))
+        current_index += 1
+    else:
+        if number_tmp is not None:
+            total_cost += cost(''.join(number_tmp))
+            colors.add('C')
+            number_tmp = None
+
+    if 'C' in colors:
+        tmp = colors & color_set
+        if tmp:
+            colors = tmp
+
+    return {'cost': total_cost, 'colors': colors}
+
 
 def test_parse_manacost():
     mana_costs = {
@@ -59,11 +156,13 @@ def test_parse_manacost():
             '8GG': 10,
             'X1RR': 3,
             '2(G/B)': 3,
-            #'(2/W)(2/W)(2/w)': 6,
+            '(2/W)(2/W)(2/w)': 6,
     }
     for mc, cmc in mana_costs.iteritems():
         assert(parse_manacost(mc)['cost'] == cmc)
         print "okay"
+
+
 def import_sets(sets):
     created = 0
     for code, name in sets.iteritems():
@@ -142,12 +241,16 @@ def import_cards(cards_filename):
         if pt:
             power, toughness = pt.split('/')
         c = Card()
-        c.text = card['text']
+        text = card['text']
+        if text is not None:
+            c.text = recover_spaces(card['text'])
         c.name = card['name']
         c.type = create_CardType(*parse_type_line(card['type']))
         c.power = power
         c.toughness = toughness
         c.cmc = cmc
+        if manacost is not None:
+            c.mana_cost = manacost
         c.loyalty = card.get('loyalty')
         c.save()
         c.colors = colors

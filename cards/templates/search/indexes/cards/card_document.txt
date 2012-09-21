@@ -1,0 +1,11 @@
+{{ object.name }}
+{{ object.text }}
+{{ object.mana_cost }}
+{{ object.power }} / {{ object.toughness }}
+{% if object.loyalty %}
+  loyalty {{ object.loyalty }}
+{% endif %}
+{% for color in object.colors.all %}
+  {{ color.name }}
+{% endfor %}
+{{ object.type }}
