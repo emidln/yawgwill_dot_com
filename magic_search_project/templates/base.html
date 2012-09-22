@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %} {% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+        {% block extra_head %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span4 offset4">
+                    {% block search %}
+                    {% endblock search %}
+                </div><!-- span4 offset4 -->
+            </div><!-- row-fluid -->
+            <div class="row-fluid">
+                <div class="span2 offset1">
+                    {% block universal_facets %}
+                    {% endblock universal_facets %}
+                </div><!-- span2 offset1 -->
+                <div class="span4 offset1">
+                    {% block results %}
+                    {% endblock results %}
+                </div><!-- span4 offset1 -->
+                <div class="span2 offset1">
+                    {% block type_facets %}
+                    {% endblock type_facets %}
+                </div><!-- span3 offset1 -->
+            </div><!-- row-fluid -->
+        </div><!-- container fluid -->
+        <hr>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}js/bootstrap.js"></script>
+        {% block extra_js %}
+        {% endblock %}
+    </body>
+</html>
+
