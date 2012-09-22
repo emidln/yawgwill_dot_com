@@ -146,9 +146,15 @@
             <p>{% if page.has_previous %} <a href="?{{ getvars }}&page={{ page.previous_page_number }}">Previous</a> {% endif %} Page {{ page.number }} of {{ paginator.num_pages }} {% if page.has_next %} <a href="?{{ getvars }}&page={{ page.next_page_number }}">Next</a> {% endif %}</p>{% endspaceless %}
             {% for result in page.object_list %}
                 <div class="search_result" style="border: 1px solid black; padding: 0.5em; margin-top: 0.5em;">
-                    <p>{{ forloop.counter0|add:page.start_index }}. {{ result.name }} {{ result.mana_cost }}</p>
+                    <p>{{ forloop.counter0|add:page.start_index }}. {{ result.name }} <b>{{ result.mana_cost }}</b></p>
                     <p>{{ result.card_type }}</p>
                     <p>{{ result.text }}</p>
+                    {% if result.type == "Creature" %}
+                       <p>{{ result.power }} / {{ result.toughness }}</p>
+                    {% endif %}
+                    {% if result.type == "Planeswalker" %}
+                       <p>{{ result.loyalty }}</p>
+                    {% endif %}
                 </div>
             {% endfor %}
             {% spaceless %}
