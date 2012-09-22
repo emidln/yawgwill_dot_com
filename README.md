@@ -1,5 +1,4 @@
-Magic Search Project
----------------------
+# Magic Search Project
 
 Requirements
 -------------
