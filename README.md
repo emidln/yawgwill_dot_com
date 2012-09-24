@@ -1,4 +1,4 @@
-# Magic Search Project
+# Yawgwill.com: Magic Search Project
 
 Requirements
 -------------
@@ -13,6 +13,7 @@ To get started, you need to do the following:
 
     $ virtualenv env
     $ source env/bin/activate
+    $ pip install -r pip-requirements.txt
     $ python manage.py syncdb --noinput
     $ python manage.py shell
     >>> from cards.utils import *
