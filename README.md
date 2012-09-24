@@ -22,5 +22,9 @@ To get started, you need to do the following:
     >>> exit
     $ python manage.py rebuild_index
     y
+    $ python manage.py collectstatic
+    yes
+    $ python manage.py runserver
+    (starts a server on localhost:8000)
 
 Loading the initial data should be built into a management command but I'm lazy.
