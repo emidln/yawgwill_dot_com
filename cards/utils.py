@@ -15,19 +15,44 @@ def check_builder(l, n):
 
 CHECKER = check_builder(string.uppercase, 2)
 CHECKER.update(check_builder(string.lowercase, 1))
+CHECKER.update({' ': 0})
+CHECKER.update(check_builder('.,!?:', 3))
 
 
 def check(c):
     """ return 2 for uppercase, 1 for lowercase, 0 otherwise """
-    return CHECKER.get(c, 0)
+    return CHECKER.get(c, 4)
 
 
 def reducer(x, y):
     """ Helper for recover spaces. If x is lowercase and y is uppercase, insert
         a space because we have a runon word to correct.
     """
-    if check(x[-1]) == 1 and (check(y) == 2 or y == '{'):
+    c0 = check(x[-1])
+    c1 = check(y)
+    # if either character is a space, no change
+    if c0 == 0 or c1 == 0:
+        return x + y
+    elif c0 == 1:
+        # lowercase -> lowercase = no change
+        if c1 == 1:
+            return x + y
+        # lowercase -> uppercase = insert space
+        elif c1 == 2:
+            return x + ' ' + y
+        # lowercase -> punctuation = no change
+        elif c1 == 3:
+            return x + y
+        # lowercase -> other = insert space
+        elif c1 == 4:
+            return x + ' ' + y
+        raise Exception('lowercase -> unhandled')
+    elif c0 == 3:
+        # punctuation -> non-space
         return x + ' ' + y
+    elif c0 == 2:
+        # uppercase -> anything, no change
+        return x + y
     return x + y
 
 
@@ -88,7 +113,7 @@ def handle_parens(partial_cost):
             costs.append(cost(c))
             colors.add(color(c))
 
-    return partial_cost[i+1:], max(costs), colors
+    return partial_cost[i + 1:], max(costs), colors
 
 
 def parse_manacost(mana_cost):
@@ -110,7 +135,7 @@ def parse_manacost(mana_cost):
                 total_cost += cost(''.join(number_tmp))
                 colors.add('C')
                 number_tmp = None
-            results = handle_parens(current_source[current_index+1:])
+            results = handle_parens(current_source[current_index + 1:])
             current_source = results[0]
             current_index = -1
             current_length = len(current_source)
@@ -156,6 +181,7 @@ def test_parse_manacost():
             '8GG': 10,
             'X1RR': 3,
             '2(G/B)': 3,
+            '(W/B)(W/B)(W/B)': 3,
             '(2/W)(2/W)(2/w)': 6,
     }
     for mc, cmc in mana_costs.iteritems():

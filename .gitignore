@@ -1,3 +1,4 @@
 *.pyc
 env/
 dev.db
+magic_search_project/collected_static/*
