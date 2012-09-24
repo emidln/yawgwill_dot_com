@@ -138,7 +138,8 @@
 {% endblock search %}
 
 {% block results %}
-    {% if query %}
+{% if query %}
+        <p>{% for facet in form.selected_facets %} {{ facet }} &gt; {% endfor %}</p>
         <!-- Display results... -->
         {% if paginator.count %}
             <p>{{ paginator.count }} matching cards found.</p>
